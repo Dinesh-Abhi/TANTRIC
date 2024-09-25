@@ -29,7 +29,7 @@ To set up the TANTRIC project locally, follow these steps:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/tantric.git
+   git clone https://github.com/Dinesh-Abhi/tantric.git
    cd tantric
    ```
 
