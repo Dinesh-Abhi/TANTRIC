@@ -17,6 +17,10 @@
             margin: 20px;
         }
 
+        .container-fluid {
+            max-width: 1800px; /* Adjust this value as needed */
+        }
+
         .card {
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border-radius: 15px;
@@ -100,6 +104,12 @@
             color: #fff;
         }
 
+        .filter-btn-70 {
+            background-color: #3ec2f6;
+            border-color: #3ec2f6;
+            color: #fff;
+        }
+
         .filter-btn-100 {
             background-color: #28a745;
             border-color: #28a745;
@@ -160,8 +170,48 @@
             }
         }
 
-        .table-responsive {
-            position: relative;
+        .table-responsive-xl {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            min-width: 600px; /* Adjust this value based on your needs */
+        }
+
+        .table th,
+        .table td {
+            white-space: nowrap;
+        }
+
+        .table .name-column {
+            width: 300px; /* Adjust this value based on your needs */
+            max-width: 300px;
+        }
+
+        .table td:nth-child(2) {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 1400px) {
+            .card-body {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .table {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .table {
+                font-size: 0.8rem;
+            }
         }
 
         .table-footer {
@@ -171,20 +221,21 @@
             margin-top: 10px;
         }
 
-        .table-footer select {
-            border-radius: 5px;
-            padding: 5px;
-        }
-
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .table-header .total-students {
+        .total-items {
             font-weight: bold;
+        }
+
+        .entries-per-page {
+            display: flex;
+            align-items: center;
+        }
+
+        .entries-per-page label {
+            margin-right: 5px;
+        }
+
+        .entries-per-page select {
+            margin: 0 5px;
         }
 
         .pagination {
@@ -230,8 +281,13 @@
         }
 
         @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
         }
 
         .btn-text {
@@ -252,17 +308,142 @@
             font-size: 14px;
             color: #6c757d;
         }
+
+        .legends {
+            font-size: 0.85em;
+            color: #6c757d;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            margin: 0 5px;
+            white-space: nowrap;
+        }
+
+        .legend-item i {
+            margin-right: 5px;
+            font-size: 1.1em;
+        }
+
+        .legend-item strong {
+            color: #343a40;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .legends {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .legend-item {
+                margin: 5px 0;
+            }
+        }
+
+        /* Add styles for better zoom handling */
+        @media screen and (min-width: 1200px) and (max-width: 1600px) {
+            html {
+                font-size: 14px;
+            }
+            .table .name-column {
+                width: 250px;
+                max-width: 250px;
+            }
+        }
+
+        @media screen and (min-width: 1601px) {
+            html {
+                font-size: 16px;
+            }
+            .table .name-column {
+                width: 300px;
+                max-width: 300px;
+            }
+        }
+
+        /* For very high zoom levels or small screens */
+        @media screen and (max-width: 992px) {
+            .table .name-column {
+                width: 200px;
+                max-width: 200px;
+            }
+        }
+
+        .btn-group .btn .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 0.8em;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        /* Remove any existing hover effects */
+        .btn-group .btn:hover .badge {
+            transform: none;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .legends {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .legend-item {
+            margin-right: 15px;
+            white-space: nowrap;
+        }
+
+        #searchInput {
+            width: 200px;
+            margin-left: auto;
+        }
+
+        @media (max-width: 992px) {
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .legends {
+                margin-bottom: 10px;
+            }
+
+            #searchInput {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div class="container mt-5">
+    <div class="container-fluid mt-5">
         <h2 class="mb-4 text-primary"><i class="fas fa-graduation-cap me-2"></i>Student Report</h2>
 
         <div class="card mb-4">
             <div class="card-body">
                 <div class="row g-3 mb-3">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="courseDropdown" class="form-label"><i class="fas fa-book me-2"></i>
                             Course:</label>
                         <select id="courseDropdown" class="form-select">
@@ -276,12 +457,12 @@
                             <option value="">Select Assignment</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <label for="submit_date" class="form-label"><i class="fas fa-calendar-alt me-2"></i>Select
-                            Date:</label>
+                    <div class="col-md-2">
+                        <label for="submit_date" class="form-label"><i class="fas fa-calendar-alt me-2"></i>Select Date:
+                        </label>
                         <input type="date" id="submit_date" class="form-control">
                     </div>
-                    <div class="col-md-3 d-flex align-items-end">
+                    <div class="col-md-2 d-flex align-items-end">
                         <button id="getReport" class="btn btn-primary w-50" disabled><i
                                 class="fas fa-search me-2"></i>Get</button>
                     </div>
@@ -290,11 +471,12 @@
                     <div class="btn-group" role="group">
                         <button id="filterNA" class="btn filter-btn-na"> N/A</button>
                         <button id="filter30" class="btn filter-btn-30"> &lt; 30%</button>
+                        <button id="filter70" class="btn filter-btn-70"> &lt; 70%</button>
                         <button id="filter100" class="btn filter-btn-100"> 100%</button>
                         <button id="filterAll" class="btn filter-btn-all">Show All</button>
                     </div>
                     <button id="exportCSV" class="btn btn-success btn-with-loader" style="display: none;">
-                        <span class="btn-text"><i class="fas fa-file-csv me-2"></i>Export CSV</span>
+                        <span class="btn-text">Export <i class="fas fa-file-csv me-2"></i></span>
                         <div class="btn-loader"></div>
                     </button>
                 </div>
@@ -303,12 +485,13 @@
 
         <div class="card">
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive-xl">
                     <div class="loader" id="loader"></div>
                     <div class="table-header">
-                        <div class="total-students">Total Students: <span id="totalEntries">0</span></div>
-                        <input type="text" id="searchInput" class="form-control" placeholder="Search..."
-                            style="width: 200px;">
+                        <div class="legends">
+                            <!-- The legends will be inserted here by JavaScript -->
+                        </div>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search...">
                     </div>
                     <table id="reportTable" class="table table-hover tablesorter">
                         <thead>
@@ -323,10 +506,17 @@
                     </table>
                     <div class="pagination" id="pagination"></div>
                     <div class="table-footer">
-                        <select id="entriesPerPage">
-                            <option value="500">500</option>
-                            <option value="1000">1000</option>
-                        </select>
+                        <div class="total-items">
+                            Total : <span id="totalItems">0</span>
+                        </div>
+                        <div class="entries-per-page">
+                            <label for="entriesPerPage">Show:</label>
+                            <select id="entriesPerPage">
+                                <option value="500">500</option>
+                                <option value="1000">1000</option>
+                            </select>
+                            <span>entries</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -339,8 +529,36 @@
             let filteredData = [];
             let entriesPerPage = 500;
             let currentPage = 1;
+            let totalStudents = 0;
+            let totalNA = 0;
+            let totalLessThan30 = 0;
+            let totalLessThan70 = 0;
+            let total100 = 0;
 
-            $("#reportTable").tablesorter();
+            // Add this variable to track the currently selected filter
+            let currentFilter = 'all';
+
+            $.tablesorter.addParser({
+                id: 'customScore',
+                is: function (table, cell) {
+                    return false; // This parser is not auto-detected
+                },
+                format: function (cell) {
+                    // Convert the cell value to a number; null is represented as NaN
+                    if (cell === null || cell.trim() === '' || cell === 'N/A') {
+                        return -Infinity; // Treat null as the lowest value
+                    }
+                    return parseFloat(cell) || 0; // Treat non-numeric values as 0
+                },
+                type: 'numeric'
+            });
+
+            $("#reportTable").tablesorter({
+                headers: {
+                    2: { sorter: 'customScore' } // Assuming the score column is the third column (index 2)
+                },
+                sortList: [[0, 0]] // Sort the htno column in ascending order on load
+            });
 
             function get_start() {
                 var user = '{{ user }}';
@@ -404,6 +622,20 @@
                 }
             });
 
+            // Set current date as default and max date
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            $('#submit_date').val(formattedDate);
+            $('#submit_date').attr('max', formattedDate);
+
+            // Prevent future date selection
+            $('#submit_date').on('input', function() {
+                const selectedDate = new Date(this.value);
+                if (selectedDate > today) {
+                    this.value = formattedDate;
+                }
+            });
+
             $('#getReport').click(function () {
                 const course_name = $('#courseDropdown').val();
                 const assignment_name = $('#assignmentDropdown').val();
@@ -425,10 +657,17 @@
                             studentData = response.payload;
                             filteredData = studentData;
                             currentPage = 1;
+                            calculateTotals(studentData);
+                            renderLegends();
                             renderTable(filteredData);
                             $('#exportCSV').show();
+                            
+                            // Reset filter buttons and set 'Show All' as active
+                            resetFilterButtons();
+                            currentFilter = 'all';
+                            $('#filterAll').addClass('active');
                         } else {
-                            alert('No data found for the selected criteria');
+                            alert('No data found for the selected assignment');
                             $('#reportTable tbody').empty();
                             $('#exportCSV').hide();
                         }
@@ -441,8 +680,81 @@
                 });
             });
 
+            function calculateTotals(data) {
+                totalStudents = data.length;
+                totalNA = 0;
+                totalLessThan30 = 0;
+                totalLessThan70 = 0;
+                total100 = 0;
+
+                data.forEach(student => {
+                    if (student.score === null) {
+                        totalNA++;
+                    } else {
+                        const score = parseFloat(student.score.split('/')[0]);
+                        if (score === 100) total100++;
+                        if (score < 30) totalLessThan30++;
+                        if (score < 70) totalLessThan70++;
+                    }
+                });
+            }
+
+            function renderLegends() {
+                // Remove existing legends before adding new ones
+                $('.legends').empty();
+
+                const legendsHTML = `
+                    <span class="legend-item">
+                        <i class="fas fa-users"></i> Total Students: <strong>${totalStudents}</strong>
+                    </span>
+                    <span class="legend-item">
+                        N/A : <strong>${totalNA}</strong>
+                    </span>
+                    <span class="legend-item">
+                         Below 30% : <strong>${totalLessThan30}</strong>
+                    </span>
+                    <span class="legend-item">
+                        Below 70% : <strong>${totalLessThan70}</strong>
+                    </span>
+                    <span class="legend-item">
+                        100% : <strong>${total100}</strong>
+                    </span>
+                `;
+                $('.legends').html(legendsHTML);
+            }
+
+            function renderTable(data) {
+                let tableContent = '';
+
+                if (!data || data.length === 0) {
+                    tableContent = `
+                        <tr class="no-data-row">
+                            <td colspan="3" class="text-center py-5">
+                                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No data</p>
+                            </td>
+                        </tr>`;
+                } else {
+                    const start = (currentPage - 1) * entriesPerPage;
+                    const end = start + entriesPerPage;
+                    tableContent = data.slice(start, end).map(student =>
+                        `<tr>
+                            <td>${student.htno}</td>
+                            <td>${student.name}</td>
+                            <td>${student.score != null ? student.score.split('/')[0] : 'N/A'}</td>
+                        </tr>`
+                    ).join('');
+                }
+
+                $('#reportTable tbody').html(tableContent);
+                $("#reportTable").trigger("update");
+                $('#totalItems').text(data ? data.length : 0);
+                renderPagination(data ? data.length : 0);
+                $("#reportTable").tablesorter("update");
+            }
+
             $('#exportCSV').click(function () {
-                showLoader();
+                setTimeout(showLoader(), 500);
                 setTimeout(() => {
                     exportTableToCSV(generateFileName());
                 }, 100);
@@ -472,19 +784,17 @@
 
                 let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
                 let downloadLink = document.createElement("a");
-                downloadLink.href = URL.createObjectURL(csvFile);
+                downloadLink.href = URL.createObjectURL(csvFile);                
                 downloadLink.download = filename;
 
                 document.body.appendChild(downloadLink);
                 downloadLink.click();
                 document.body.removeChild(downloadLink);
-
-                // Hide loader after download starts
-                setTimeout(hideLoader, 1000);
+                hideLoader()
             }
 
             function generateFileName() {
-                const now = new Date();                
+                const now = new Date();
                 const date = now.toLocaleDateString('en-GB', {
                     day: '2-digit',
                     month: '2-digit',
@@ -498,6 +808,21 @@
                 return `Students Report ${date},${time}.csv`;
             }
 
+            // Add this function to reset filter buttons
+            function resetFilterButtons() {
+                $('.btn-group .btn').removeClass('active');
+                $('.btn-group .btn').find('.badge').remove();
+            }
+
+            // Modify filter button click handlers
+            $('.btn-group .btn').click(function () {
+                resetFilterButtons();
+                $(this).addClass('active');
+                $(this).append('<span class="badge"><i class="fas fa-circle text-success"></i></span>');
+                currentFilter = $(this).attr('id').replace('filter', '').toLowerCase();
+            });
+
+            // Modify existing filter functions
             $('#filterNA').click(function () {
                 const filteredData = studentData.filter(student => student.score === null);
                 renderTable(filteredData);
@@ -507,6 +832,14 @@
                 const filteredData = studentData.filter(student => {
                     const score = parseFloat(student.score);
                     return !isNaN(score) && score < 30;
+                });
+                renderTable(filteredData);
+            });
+
+            $('#filter70').click(function () {
+                const filteredData = studentData.filter(student => {
+                    const score = parseFloat(student.score);
+                    return !isNaN(score) && score < 70;
                 });
                 renderTable(filteredData);
             });
@@ -536,35 +869,6 @@
                 currentPage = 1;
                 renderTable(filteredData);
             });
-
-            function renderTable(data) {
-                let tableContent = '';
-
-                if (!data || data.length === 0) {
-                    tableContent = `
-                        <tr class="no-data-row">
-                            <td colspan="3" class="text-center py-5">
-                                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">No data</p>
-                            </td>
-                        </tr>`;
-                } else {
-                    const start = (currentPage - 1) * entriesPerPage;
-                    const end = start + entriesPerPage;
-                    tableContent = data.slice(start, end).map(student =>
-                        `<tr>
-                            <td>${student.htno}</td>
-                            <td>${student.name}</td>
-                            <td>${student.score != null ? student.score.split('/')[0] : 'N/A'}</td>
-                        </tr>`
-                    ).join('');
-                }
-
-                $('#reportTable tbody').html(tableContent);
-                $("#reportTable").trigger("update");
-                $('#totalEntries').text(data ? data.length : 0);
-                renderPagination(data ? data.length : 0);
-            }
 
             function renderPagination(totalEntries) {
                 const totalPages = Math.ceil(totalEntries / entriesPerPage);
