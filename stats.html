@@ -5,13 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Health Monitor</title>
-    <link rel="stylesheet" href="/static/css/bootstrap1.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     <script src="/static/js/jquery-3.6.0.min.js"></script>
     <script src="/static/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/xlsx.full.min.js"></script>
     <script src="/static/js/bootstrap.bundle.min.js"></script>
-    <link href="static/css/fontawesome-6.6.0/css/all.min.css" rel="stylesheet">
-    <script src="static/js/jquery.tablesorter.js"></script>
     <!-- <script src="/static/js/slim.min.js"></script> -->
 
     <style>
@@ -201,57 +199,19 @@
         td button:hover {
             color: #0056b3;
         }
-
-        /* Custom health monitor loader */
-        .health-monitor-loader {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
-        }
-
-        /* Robotic title style */
-        .robotic-title {
-            font-family: 'Orbitron', sans-serif;
-            color: #2c3e50;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .robotic-icon {
-            font-size: 2.5rem;
-            vertical-align: middle;
-            margin-right: 10px;
-            color: #3498db;
-        }
     </style>
-    <!-- Add Orbitron font for a more robotic look -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
     <!-- Page loading spinner -->
-    <div class="page-loading">
-        <div class="health-monitor-loader"></div>
+    <div class="page-loading d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
     </div>
 
-    <h1 class="text-center my-4 robotic-title">
-        <i class="fas fa-robot robotic-icon"></i>System Health Monitor
-    </h1>
+    <h1 class="text-center my-4">System Health Monitor</h1>
     <div class="container">
         <div class="row">
 
@@ -286,6 +246,14 @@
             <!-- Get button (hidden by default) -->
             <div class="col-md-3 text-center hidden" id="getButtonContainer">
                 <button id="getButton" class="btn btn-primary btn-lg">Get</button>
+            </div>
+
+            <!-- Reset All GPU Memory Button (initially hidden) -->
+            <div class="col-md-16 text-right mb-3">
+                <button id="resetAllGpuButton" class="btn btn-warning d-none">
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    Reset All GPU Memory
+                </button>
             </div>
         </div>
 
@@ -340,6 +308,26 @@
                     <div class="tree" id="datasetTree">
                         <!-- Dataset tree will be populated here -->
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for displaying reset all GPU memory response -->
+    <div class="modal fade" id="resetGpuModal" tabindex="-1" role="dialog" aria-labelledby="resetGpuModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resetGpuModalLabel">Reset All GPU Memory Response</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="resetGpuModalBody">
+                    <!-- Response will be populated here -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -410,7 +398,7 @@
                     tableBody += `
                             <tr>
                                 <td><input type="radio" name="row-radio" class="row-radio" data-ip="${item}"></td>
-                                <td><button class="ping-btn" data-host="${item}"><i class="fas fa-microchip"></i> Worker Node ${parseInt(lastTwoDigits)}</button></td>
+                                <td><button class="ping-btn" data-host="${item}">Worker Node ${parseInt(lastTwoDigits)}</button></td>
                                 <td>
                                     <!-- This will initially display the loading spinner -->
                                     <div class="loading-spinner"></div> Loading...
@@ -423,19 +411,12 @@
 
                 $('#pingTable tbody').html(tableBody);
 
-                // Update table headers with fancy icons
-                $('#pingTable thead tr').html(`
-                    <th style="width:5%"><i class="fas fa-check-circle"></i></th>
-                    <th style="width:20%"><i class="fas fa-server"></i> Nodes</th>
-                    <th style="width:12%"><i class="fas fa-signal"></i> Status</th>
-                    <th id="dynamicHeader" class="selecteddetails"><i class="fas fa-info-circle"></i> Details</th>
-                `);
-
                 // Bind click event to IP address buttons to trigger ping
                 $('.ping-btn').click(function () {
                     const host = $(this).data('host');
                     singleMachinePing(host);    // Trigger ping for the machine
                 });
+
             }
 
             // Ping each machine and update its status
@@ -479,8 +460,8 @@
                     if (ipCell === host) {
                         // Update status column in the table
                         const statusIcon = status
-                            ? '<i class="fas fa-check-circle text-success"></i> Up'   // Green check circle for Up
-                            : '<i class="fas fa-times-circle text-danger"></i> Down'; // Red times circle for Down
+                            ? '🟢 Up'   // Green circle emoji for Up
+                            : '🔴 Down'; // Red circle emoji for Down
 
                         // Update the status cell (column 3) with the status icon
                         $(this).find('td').eq(2).html(statusIcon);
@@ -524,12 +505,12 @@
                     headerText = selectedTask; // Start with the selected task
                 }
 
-                // If a course is selected and the task is not "System Users," add it to the header
+                // If a course is selected and the task is not "System Users,GPU Memory" add it to the header
                 if (selectedCourse && (selectedTask !== 'System Users' || selectedTask !== 'GPU Memory')) {
                     headerText += ` - ${selectedCourse}`;
                 }
 
-                // If an assignment is selected and the task is not "System Users," add it to the header
+                // If an assignment is selected and the task is not "System Users,GPU Memory" add it to the header
                 if (selectedAssignment && (selectedTask !== 'System Users' || selectedTask !== 'GPU Memory')) {
                     headerText += ` - ${selectedAssignment}`;
                 }
@@ -630,7 +611,7 @@
                 const selectedTask = $(this).val();
 
                 if (selectedTask === 'System Users' || selectedTask === 'GPU Memory') {
-                    $('#getButtonContainer').removeClass('hidden');   // Show Get button directly for System Users and GPU Memory
+                     $('#getButtonContainer').removeClass('hidden');   // Show Get button directly for System Users and GPU Memory
                 } else if (selectedTask !== '') {
                     $('#getButtonContainer').addClass('hidden');      // Hide Get button until course and assignment are selected
                 } else {
@@ -813,7 +794,46 @@
                 });
             }
 
+            function showgpumemory(gpuInfoCelllocal){
+            
+            		// Select the <td> element
+		    const gpuInfoCell = gpuInfoCelllocal;
 
+		    // Extract and parse text content
+		    const textContent = gpuInfoCell.text();
+
+			// Regex to match memory and utilization values
+			const regex = /(\d+) MiB, (\d+) MiB, (\d+) %/;
+			const match = textContent.match(regex);
+
+			if (match) {
+			    // Parse values from the regex match groups
+			    const memoryUsed = parseInt(match[1]);
+			    const memoryTotal = parseInt(match[2]);
+			    const utilizationGpu = parseInt(match[3]);
+
+			    // Calculate memory usage percentage
+			    const usagePercentage = (memoryUsed / memoryTotal) * 100;
+
+			    // Apply background color based on memory usage percentage
+			    if (usagePercentage <= 50) {
+				gpuInfoCell.css("color", "green");
+			    } else if (usagePercentage <= 89) {
+				gpuInfoCell.css("color", "orange");
+			    } else {//90 and above
+				gpuInfoCell.css("color", "red");
+			    }
+			    // Update the <td> content with formatted information
+			    gpuInfoCell.html(`
+				<strong>Memory:</strong> ${memoryUsed} MiB / ${memoryTotal} MiB (${Math.round(usagePercentage*100)/100} %)<br>
+				<strong>Utilization:</strong> ${utilizationGpu} %<br>
+				<strong>Status:</strong> <span class="text-success">✅</span>
+			    `);
+			} else {
+			    console.error("Failed to extract GPU information from text content.");
+			}
+    
+            }
             function fetchGpuMemory(host) {
                 $.ajax({
                     url: '/getgpumemory',
@@ -832,6 +852,9 @@
 
                                 const publishedData = `${message}, Status: ${publishedStatus}`;
                                 $(this).find('td').eq(3).html(publishedData);  // Replace the spinner with the result
+                                showgpumemory($(this).find('td').eq(3));
+                                
+                                
                             }
                         });
                     },
@@ -882,6 +905,44 @@
                 });
             }
 
+            // /resetallgpumemory
+            function resetallGpuMemory(host, callback) {
+                $.ajax({
+                    url: '/resetallgpumemory',
+                    type: 'GET',
+                    data: { host: host },
+                    success: function (response) {
+                        const status = response.status;
+                        const message = response.message;
+
+                        $('#pingTable tbody tr').each(function () {
+                            const ipCell = $(this).find('.ping-btn').data('host');
+                            if (ipCell === host) {
+                                const resetAllStatus = status
+                                    ? '<span class="text-success">✅</span>'
+                                    : '<span class="text-danger">❌</span>';
+
+                                const resetAllData = `${message}, Status: ${resetAllStatus}`;
+                                $(this).find('td').eq(3).html(resetAllData);  // Replace the spinner with the result
+                            }
+                        });
+
+                        if (callback) callback(response);
+                    },
+                    error: function (error) {
+                        console.error('Error fetching gpu memory for host:', host, error);
+                        // Update the row with an error message
+                        $('#pingTable tbody tr').each(function () {
+                            const ipCell = $(this).find('.ping-btn').data('host');
+                            if (ipCell === host) {
+                                $(this).find('td').eq(3).html('Error fetching API data ❌'); // Show error for this row
+                            }
+                        });
+
+                        if (callback) callback({ message: 'Error fetching API data ❌' });
+                    }
+                });
+            }
             // Fetch and display dataset structure in the modal
             function courseAssignmentsDataset(host, selectedCourse) {
                 $.ajax({
@@ -953,39 +1014,39 @@
             function addDynamicColumn() {
                 // Check if the dynamic columns already exist
                 if ($('#gpuMemoryHeader').length === 0) {
-                    // Add headers for the dynamic columns with icons
-                    $('#pingTable thead tr').append('<th id="gpuMemoryHeader"><i class="fas fa-sync-alt"></i> Reset GPU</th>');
-                    $('#pingTable thead tr').append('<th id="getGpuMemoryHeader"><i class="fas fa-microchip"></i> Get GPU Memory</th>');
+                    // Add headers for the dynamic columns
+                    $('#pingTable thead tr').append('<th id="gpuMemoryHeader">Reset GPU</th>');
+                    $('#pingTable thead tr').append('<th id="getGpuMemoryHeader">Get GPU Memory</th>');
 
                     // Add a cell for each row in the table body
                     $('#pingTable tbody tr').each(function () {
                         const host = $(this).find('.ping-btn').data('host');
 
-                        // Add Reset GPU button with icon
-                        $(this).append(`<td class="gpuMemoryCell"><button class="gpu-btn btn btn-sm btn-outline-primary" data-host="${host}"><i class="fas fa-sync-alt"></i></button></td>`);
+                        // Add Reset GPU button
+                        $(this).append(`<td class="gpuMemoryCell"><button class="gpu-btn" data-host="${host}">Reset GPU</button></td>`);
 
-                        // Add Get GPU Memory button with icon
-                        $(this).append(`<td class="getGpuMemoryCell"><button class="get-gpu-btn btn btn-sm btn-outline-info" data-host="${host}"><i class="fas fa-microchip"></i></button></td>`);
+                        // Add Get GPU Memory button
+                        $(this).append(`<td class="getGpuMemoryCell"><button class="get-gpu-btn" data-host="${host}">Get GPU</button></td>`);
                     });
                 } else {
                     // Update existing rows with buttons if columns already exist
                     $('#pingTable tbody tr').each(function () {
                         const host = $(this).find('.ping-btn').data('host');
 
-                        // Update or add Reset GPU button with icon
+                        // Update or add Reset GPU button
                         const resetCell = $(this).find('.gpuMemoryCell');
                         if (resetCell.length === 0) {
-                            $(this).append(`<td class="gpuMemoryCell"><button class="gpu-btn btn btn-sm btn-outline-primary" data-host="${host}"><i class="fas fa-sync-alt"></i></button></td>`);
+                            $(this).append(`<td class="gpuMemoryCell"><button class="gpu-btn" data-host="${host}">Reset GPU</button></td>`);
                         } else {
-                            resetCell.html(`<button class="gpu-btn btn btn-sm btn-outline-primary" data-host="${host}"><i class="fas fa-sync-alt"></i></button>`);
+                            resetCell.html(`<button class="gpu-btn" data-host="${host}">Reset GPU</button>`);
                         }
 
-                        // Update or add Get GPU button with icon
+                        // Update or add Get GPU button
                         const getGpuCell = $(this).find('.getGpuMemoryCell');
                         if (getGpuCell.length === 0) {
-                            $(this).append(`<td class="getGpuMemoryCell"><button class="get-gpu-btn btn btn-sm btn-outline-info" data-host="${host}"><i class="fas fa-microchip"></i></button></td>`);
+                            $(this).append(`<td class="getGpuMemoryCell"><button class="get-gpu-btn" data-host="${host}">Get GPU</button></td>`);
                         } else {
-                            getGpuCell.html(`<button class="get-gpu-btn btn btn-sm btn-outline-info" data-host="${host}"><i class="fas fa-microchip"></i></button>`);
+                            getGpuCell.html(`<button class="get-gpu-btn" data-host="${host}">Get GPU</button>`);
                         }
                     });
                 }
@@ -1071,24 +1132,83 @@
                 });
             }
 
-            // Updated legends with Font Awesome icons
-            function updateLegends() {
-                $('#onlineCount').parent().html(`
-                    <div class="alert alert-success" role="alert">
-                        <i class="fas fa-check-circle"></i> Up: <span id="onlineCount">0</span>
-                        <span id="onlineSpinner" class="loading-spinner d-none"></span>
-                    </div>
-                `);
-                $('#offlineCount').parent().html(`
-                    <div class="alert alert-danger" role="alert">
-                        <i class="fas fa-times-circle"></i> Down: <span id="offlineCount">0</span>
-                        <span id="offlineSpinner" class="loading-spinner d-none"></span>
-                    </div>
-                `);
+            // Function to reset all GPU memory and show response in modal
+            function resetAllGpuMemory() {
+                // Show the page loader
+                $('.page-loading').removeClass('d-none');
+
+                // Show the button loader
+                $('#resetAllGpuButton .spinner-border').removeClass('d-none');
+
+                $.ajax({
+                    url: '/resetallgpumemory',
+                    type: 'GET',
+                    success: function (response) {
+                        const status = response.status;
+                        let responseHtml = '';
+
+                        if (status) {
+                            try {
+                                // Manually parse the message string
+                                const messageString = response.message;
+                                const jsonString = messageString
+                                    .replace(/'/g, '"') // Replace single quotes with double quotes
+                                    .replace(/True/g, 'true') // Replace Python boolean with JavaScript boolean
+                                    .replace(/False/g, 'false'); // Replace Python boolean with JavaScript boolean
+
+                                const parsedMessage = JSON.parse(jsonString);
+                                const responseData = parsedMessage.response;
+
+                                if (Array.isArray(responseData)) {
+                                    responseData.forEach(item => {
+                                        const message = item.message;
+                                        const success = item.success;
+                                        const statusIcon = success ? '✅' : '❌';
+                                        responseHtml += `<p>${message} ${statusIcon}</p>`;
+                                    });
+                                } else {
+                                    responseHtml = '<p>Unexpected response format ❌</p>';
+                                }
+                            } catch (e) {
+                                console.error('Error parsing response message:', e);
+                                responseHtml = '<p>Error parsing response data ❌</p>';
+                            }
+                        } else {
+                            responseHtml = '<p>Error fetching data ❌</p>';
+                        }
+
+                        $('#resetGpuModalBody').html(responseHtml);
+                        $('#resetGpuModal').modal('show');
+                    },
+                    error: function (error) {
+                        console.error('Error fetching GPU memory reset data:', error);
+                        $('#resetGpuModalBody').html('<p>Error fetching API data ❌</p>');
+                        $('#resetGpuModal').modal('show');
+                    },
+                    complete: function () {
+                        // Hide the page loader
+                        $('.page-loading').addClass('d-none');
+
+                        // Hide the button loader
+                        $('#resetAllGpuButton .spinner-border').addClass('d-none');
+                    }
+                });
             }
 
-            // Call this function after the document is ready
-            updateLegends();
+            // Show or hide the Reset All GPU Memory button based on the selected option
+            $('#optionsselect').change(function () {
+                const selectedTask = $(this).val();
+                if (selectedTask === 'GPU Memory') {
+                    $('#resetAllGpuButton').removeClass('d-none');
+                } else {
+                    $('#resetAllGpuButton').addClass('d-none');
+                }
+            });
+
+            // Attach click event to the Reset All GPU Memory button
+            $('#resetAllGpuButton').click(function () {
+                resetAllGpuMemory();
+            });
 
         });
         $(window).on('unload', function () {
