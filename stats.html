@@ -180,6 +180,22 @@
             border-color: #007bff;
         }
 
+        .btn-reset {
+            background-color: #ff4d4d; /* Light red background */
+            color: white;              /* White text */
+            border: none;              /* No border */
+            padding: 10px 20px;       /* Padding for size */
+            font-size: 16px;          /* Font size */
+            cursor: pointer;           /* Pointer on hover */
+            border-radius: 5px;       /* Rounded corners */
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+
+        .btn-reset:hover {
+            background-color: #ff1a1a; /* Darker red on hover */
+        }
+
+
         .btn-primary:hover {
             background-color: #0056b3;
         }
@@ -247,14 +263,6 @@
             <div class="col-md-3 text-center hidden" id="getButtonContainer">
                 <button id="getButton" class="btn btn-primary btn-lg">Get</button>
             </div>
-
-            <!-- Reset All GPU Memory Button (initially hidden) -->
-            <div class="col-md-16 text-right mb-3">
-                <button id="resetAllGpuButton" class="btn btn-warning d-none">
-                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                    Reset All GPU Memory
-                </button>
-            </div>
         </div>
 
         <!-- Updated legends with emojis below the Get button, aligned to the left -->
@@ -270,6 +278,14 @@
                     🔴 Down: <span id="offlineCount">0</span>
                     <span id="offlineSpinner" class="loading-spinner d-none"></span>
                 </div>
+            </div>
+        
+            <!-- Reset All GPU Memory Button (initially hidden) -->
+            <div class="col-md-3 text-right mb-3">
+                <button id="resetAllGpuButton" class="btn btn-reset d-none custom-margin">
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    Reset All
+                </button>
             </div>
         </div>
 
@@ -1219,5 +1235,4 @@
     </script>
 
 </body>
-
 </html>
