@@ -183,18 +183,27 @@
         }
 
         .btn-reset {
-            background-color: #ff4d4d; /* Light red background */
-            color: white;              /* White text */
-            border: none;              /* No border */
-            padding: 10px 20px;       /* Padding for size */
-            font-size: 16px;          /* Font size */
-            cursor: pointer;           /* Pointer on hover */
-            border-radius: 5px;       /* Rounded corners */
-            transition: background-color 0.3s; /* Smooth transition */
+            background-color: #ff4d4d;
+            /* Light red background */
+            color: white;
+            /* White text */
+            border: none;
+            /* No border */
+            padding: 10px 20px;
+            /* Padding for size */
+            font-size: 16px;
+            /* Font size */
+            cursor: pointer;
+            /* Pointer on hover */
+            border-radius: 5px;
+            /* Rounded corners */
+            transition: background-color 0.3s;
+            /* Smooth transition */
         }
 
         .btn-reset:hover {
-            background-color: #ff1a1a; /* Darker red on hover */
+            background-color: #ff1a1a;
+            /* Darker red on hover */
         }
 
 
@@ -229,7 +238,8 @@
         </div>
     </div>
 
-    <h1 class="text-center my-4"><i class="fas fa-microchip"></i> System Health Monitor</h1>    
+    <h1 class="text-center my-4"><i class="fas fa-microchip"></i> System Health Monitor</h1>
+
     <div class="container">
         <div class="row">
 
@@ -281,7 +291,7 @@
                     <span id="offlineSpinner" class="loading-spinner d-none"></span>
                 </div>
             </div>
-        
+
             <!-- Reset All GPU Memory Button (initially hidden) -->
             <div class="col-md-3 text-right mb-3">
                 <button id="resetAllGpuButton" class="btn btn-reset d-none custom-margin">
@@ -335,7 +345,8 @@
     </div>
 
     <!-- Modal for displaying reset all GPU memory response -->
-    <div class="modal fade" id="resetGpuModal" tabindex="-1" role="dialog" aria-labelledby="resetGpuModalLabel" aria-hidden="true">
+    <div class="modal fade" id="resetGpuModal" tabindex="-1" role="dialog" aria-labelledby="resetGpuModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -629,7 +640,7 @@
                 const selectedTask = $(this).val();
 
                 if (selectedTask === 'System Users' || selectedTask === 'GPU Memory') {
-                     $('#getButtonContainer').removeClass('hidden');   // Show Get button directly for System Users and GPU Memory
+                    $('#getButtonContainer').removeClass('hidden');   // Show Get button directly for System Users and GPU Memory
                 } else if (selectedTask !== '') {
                     $('#getButtonContainer').addClass('hidden');      // Hide Get button until course and assignment are selected
                 } else {
@@ -812,47 +823,57 @@
                 });
             }
 
-            function showgpumemory(gpuInfoCelllocal){
-            
-            		// Select the <td> element
-		    const gpuInfoCell = gpuInfoCelllocal;
+            function showgpumemory(gpuInfoCelllocal) {
 
-		    // Extract and parse text content
-		    const textContent = gpuInfoCell.text();
+                // Select the <td> element
+                const gpuInfoCell = gpuInfoCelllocal;
 
-			// Regex to match memory and utilization values
-			const regex = /(\d+) MiB, (\d+) MiB, (\d+) %/;
-			const match = textContent.match(regex);
+                // Extract and parse text content
+                const textContent = gpuInfoCell.text();
 
-			if (match) {
-			    // Parse values from the regex match groups
-			    const memoryUsed = parseInt(match[1]);
-			    const memoryTotal = parseInt(match[2]);
-			    const utilizationGpu = parseInt(match[3]);
+                // Regex to match memory and utilization values
+                const regex = /(\d+) MiB, (\d+) MiB, (\d+) %/;
+                const match = textContent.match(regex);
 
-			    // Calculate memory usage percentage
-			    const usagePercentage = (memoryUsed / memoryTotal) * 100;
+                if (match) {
+                    // Parse values from the regex match groups
+                    const memoryUsed = parseInt(match[1]);
+                    const memoryTotal = parseInt(match[2]);
+                    const utilizationGpu = parseInt(match[3]);
 
-			    // Apply background color based on memory usage percentage
-			    if (usagePercentage <= 50) {
-				gpuInfoCell.css("color", "green");
-			    } else if (usagePercentage <= 89) {
-				gpuInfoCell.css("color", "orange");
-			    } else {//90 and above
-				gpuInfoCell.css("color", "red");
-			    }
-			    // Update the <td> content with formatted information
-			    gpuInfoCell.html(`
-				<strong>Memory:</strong> ${memoryUsed} MiB / ${memoryTotal} MiB (${Math.round(usagePercentage*100)/100} %)<br>
+                    // Calculate memory usage percentage
+                    const usagePercentage = (memoryUsed / memoryTotal) * 100;
+
+                    // Apply background color based on memory usage percentage
+                    if (usagePercentage <= 50) {
+                        gpuInfoCell.css("color", "green");
+                    } else if (usagePercentage <= 89) {
+                        gpuInfoCell.css("color", "orange");
+                    } else {//90 and above
+                        gpuInfoCell.css("color", "red");
+                    }
+                    // Update the <td> content with formatted information
+                    gpuInfoCell.html(`
+				<strong>Memory:</strong> ${memoryUsed} MiB / ${memoryTotal} MiB (${Math.round(usagePercentage * 100) / 100} %)<br>
 				<strong>Utilization:</strong> ${utilizationGpu} %<br>
 				<strong>Status:</strong> <span class="text-success">✅</span>
 			    `);
-			} else {
-			    console.error("Failed to extract GPU information from text content.");
-			}
-    
+                } else {
+                    console.error("Failed to extract GPU information from text content.");
+                }
+
+            }
+            function showLoadingInCell(cell) {
+                cell.html(`
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Fetching...   
+                `);
             }
             function fetchGpuMemory(host) {
+                const gpuInfoCell = $(`#pingTable tbody tr`).find(`.ping-btn[data-host="${host}"]`).closest('tr').find('td').eq(3);
+
+                // Show loading state
+                showLoadingInCell(gpuInfoCell);
+
                 $.ajax({
                     url: '/getgpumemory',
                     type: 'GET',
@@ -871,8 +892,8 @@
                                 const publishedData = `${message}, Status: ${publishedStatus}`;
                                 $(this).find('td').eq(3).html(publishedData);  // Replace the spinner with the result
                                 showgpumemory($(this).find('td').eq(3));
-                                
-                                
+
+
                             }
                         });
                     },
@@ -890,6 +911,12 @@
             }
 
             function fetchSingleGpuMemory(host) {
+
+                // Find the cell that displays GPU info for this host
+                const gpuInfoCell = $(`#pingTable tbody tr`).find(`.ping-btn[data-host="${host}"]`).closest('tr').find('td').eq(3);
+
+                // Show loading state
+                showLoadingInCell(gpuInfoCell);
                 $.ajax({
                     url: '/resetgpumemory',
                     type: 'GET',
@@ -1237,4 +1264,5 @@
     </script>
 
 </body>
+
 </html>
